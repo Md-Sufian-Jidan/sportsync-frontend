@@ -29,12 +29,9 @@ export function Faq() {
   ];
 
   return (
-    <section
-      id="faq"
-      className="relative py-24 bg-[#030712] overflow-hidden"
-    >
-      <div className="max-w-4xl mx-auto px-6 md:px-8 w-full relative z-10">
-        
+    <section id="faq" className="relative py-24 bg-background">
+      <div className="max-w-4xl mx-auto px-6 md:px-8 w-full">
+
         {/* Title */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
           <motion.h4
@@ -50,7 +47,7 @@ export function Faq() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="text-3xl md:text-4xl font-heading font-black text-white"
+            className="text-3xl md:text-4xl font-heading font-black text-foreground"
           >
             Frequently Asked Questions
           </motion.h2>
@@ -59,7 +56,7 @@ export function Faq() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="font-body text-sm md:text-base text-gray-400"
+            className="font-body text-sm md:text-base text-muted-foreground"
           >
             Find quick answers to common queries regarding reservations, safety configurations, pricing, and system parameters.
           </motion.p>
@@ -71,22 +68,21 @@ export function Faq() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="glass p-6 md:p-8 rounded-2xl border border-white/5 bg-gray-950/20 backdrop-blur-md"
+          className="p-6 md:p-8 rounded-2xl border border-border bg-card shadow-sm"
         >
           <Accordion type="single" collapsible className="space-y-4">
             {faqs.map((faq, idx) => (
-              <AccordionItem key={idx} value={`item-${idx}`} className="border-white/5">
-                <AccordionTrigger className="font-heading text-sm md:text-base font-bold text-white hover:text-secondary hover:no-underline text-left py-4">
+              <AccordionItem key={idx} value={`item-${idx}`} className="border-border">
+                <AccordionTrigger className="font-heading text-sm md:text-base font-bold text-foreground hover:text-secondary hover:no-underline text-left py-4">
                   {faq.q}
                 </AccordionTrigger>
-                <AccordionContent className="font-body text-xs md:text-sm text-gray-400 leading-relaxed pt-1 pb-4">
+                <AccordionContent className="font-body text-xs md:text-sm text-muted-foreground leading-relaxed pt-1 pb-4">
                   {faq.a}
                 </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
         </motion.div>
-
       </div>
     </section>
   );

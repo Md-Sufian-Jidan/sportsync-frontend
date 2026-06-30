@@ -41,7 +41,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn("h-full antialiased", merriweather.variable)}
     >
-      <body className="min-h-full flex flex-col bg-[#030712] text-white">
+      <body>
         <SmoothScrollProvider>
           {children}
         </SmoothScrollProvider>

@@ -4,6 +4,7 @@ export interface ParkingZone {
   id: string;
   name: string;
   availableSpots: number;
+  type: string;
   totalSpots: number;
   pricePerHour: number;
   description: string;
@@ -16,6 +17,7 @@ const INITIAL_ZONES: ParkingZone[] = [
     name: "EV Charging Zone",
     availableSpots: 12,
     totalSpots: 20,
+    type: "covered",
     pricePerHour: 4.5,
     description: "Equipped with high-speed DC charging stations. Priority access for electric vehicles.",
     features: ["Level 3 Charging", "CCTV Monitored", "Underground"],
@@ -25,6 +27,7 @@ const INITIAL_ZONES: ParkingZone[] = [
     name: "VIP Parking",
     availableSpots: 3,
     totalSpots: 10,
+    type: "covered",
     pricePerHour: 8.0,
     description: "Spacious premium spots located closest to main exit gates with dedicated valet access.",
     features: ["Closest to Exit", "Wider Spaces", "Valet Included", "24/7 Security"],
@@ -34,6 +37,7 @@ const INITIAL_ZONES: ParkingZone[] = [
     name: "Premium Parking",
     availableSpots: 28,
     totalSpots: 50,
+    type: "covered",
     pricePerHour: 5.0,
     description: "Covered, well-lit spaces offering top security and quick entry pathways.",
     features: ["Covered Parking", "Well Lit", "Fast Pathway"],
@@ -43,6 +47,7 @@ const INITIAL_ZONES: ParkingZone[] = [
     name: "Visitor Parking",
     availableSpots: 64,
     totalSpots: 120,
+    type: "covered",
     pricePerHour: 2.5,
     description: "General parking areas ideal for long-term and short-term standard visitors.",
     features: ["Outdoor", "Budget Friendly", "Self Service"],

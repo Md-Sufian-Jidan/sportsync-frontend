@@ -13,7 +13,7 @@ import { Footer } from "@/components/modules/shared/Footer";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#030712] text-white flex flex-col justify-between">
+    <div>
       {/* 1. Navbar */}
       <Navbar />
 

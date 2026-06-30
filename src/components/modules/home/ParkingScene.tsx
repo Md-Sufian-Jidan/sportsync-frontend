@@ -133,7 +133,7 @@ function Scene() {
   return (
     <>
       <ambientLight intensity={0.6} />
-      
+
       {/* Dynamic spot light on the parking spaces */}
       <spotLight
         position={[0, 10, 0]}
@@ -149,7 +149,7 @@ function Scene() {
         castShadow
         shadow-mapSize={[1024, 1024]}
       />
-      
+
       {/* Cyber Grid Stars */}
       <Stars radius={50} depth={20} count={100} factor={4} saturation={0.5} fade speed={2} />
 
@@ -171,7 +171,7 @@ function Scene() {
       {/* Moving and Static Cars */}
       <MovingCar initialPosition={[-3, -0.2, 2]} color="#06b6d4" speed={1.2} direction={1} range={1.5} />
       <MovingCar initialPosition={[3, -0.2, -2.5]} color="#2563eb" speed={0.9} direction={-1} range={1.2} />
-      
+
       {/* Static Cars parked */}
       <group position={[3, -0.2, 2]}>
         <mesh castShadow>
@@ -212,7 +212,7 @@ export function ParkingScene() {
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
         <div className="w-12 h-12 rounded-full border-2 border-t-secondary border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
       </div>
-      
+
       <Canvas
         camera={{ position: [6, 5, 8], fov: 40 }}
         className="w-full h-full relative z-10"
