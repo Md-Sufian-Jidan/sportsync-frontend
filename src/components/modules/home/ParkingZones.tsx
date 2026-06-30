@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { motion } from "react-view"; // Wait, react-view is not a package we want. Let's make sure we import standard Framer Motion.
-import { motion as framerMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { BatteryCharging, Award, User, Sparkles, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,33 +27,30 @@ export function ParkingZones() {
 
   const getZoneColors = (name: string) => {
     const title = name.toLowerCase();
-    if (title.includes("ev")) return { color: "text-accent", progress: "bg-accent", glow: "shadow-accent/5 hover:border-accent/30" };
-    if (title.includes("vip")) return { color: "text-primary", progress: "bg-primary", glow: "shadow-primary/5 hover:border-primary/30" };
-    if (title.includes("premium")) return { color: "text-secondary", progress: "bg-secondary", glow: "shadow-secondary/5 hover:border-secondary/30" };
-    return { color: "text-gray-400", progress: "bg-gray-400", glow: "shadow-gray-400/5 hover:border-gray-400/30" };
+    if (title.includes("ev")) return { color: "text-accent", progress: "bg-accent", glow: "hover:border-accent/30" };
+    if (title.includes("vip")) return { color: "text-primary", progress: "bg-primary", glow: "hover:border-primary/30" };
+    if (title.includes("premium")) return { color: "text-secondary", progress: "bg-secondary", glow: "hover:border-secondary/30" };
+    return { color: "text-gray-400", progress: "bg-gray-400", glow: "hover:border-gray-400/30" };
   };
 
   return (
-    <section
-      id="zones"
-      className="relative py-24 bg-[#030712] overflow-hidden"
-    >
+    <section id="zones" className="relative py-24 bg-[#030712] overflow-hidden">
       <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-8 w-full relative z-10">
-        
+
         {/* Title Block */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
           <div className="space-y-4 max-w-2xl">
-            <framerMotion.h4
+            <motion.h4
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               className="font-body text-xs font-bold uppercase tracking-widest text-secondary"
             >
               Active Zones
-            </framerMotion.h4>
-            <framerMotion.h2
+            </motion.h4>
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -62,8 +58,8 @@ export function ParkingZones() {
               className="text-3xl md:text-4xl font-heading font-black text-white"
             >
               Tailored Parking Zones
-            </framerMotion.h2>
-            <framerMotion.p
+            </motion.h2>
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -71,10 +67,10 @@ export function ParkingZones() {
               className="font-body text-sm md:text-base text-gray-400"
             >
               Select from dedicated zones built specifically around your vehicle requirements and parking expectations.
-            </framerMotion.p>
+            </motion.p>
           </div>
-          
-          <framerMotion.div
+
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -86,7 +82,7 @@ export function ParkingZones() {
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-          </framerMotion.div>
+          </motion.div>
         </div>
 
         {/* Zones Grid */}
@@ -98,7 +94,7 @@ export function ParkingZones() {
             const isFull = zone.availableSpots === 0;
 
             return (
-              <framerMotion.div
+              <motion.div
                 key={zone.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -145,7 +141,7 @@ export function ParkingZones() {
                         <span className="text-gray-300 font-semibold">{fillPercentage.toFixed(0)}%</span>
                       </div>
                       <div className="h-2 w-full bg-gray-800 rounded-full overflow-hidden">
-                        <framerMotion.div
+                        <motion.div
                           className={`h-full ${progress}`}
                           initial={{ width: 0 }}
                           whileInView={{ width: `${fillPercentage}%` }}
@@ -157,7 +153,7 @@ export function ParkingZones() {
 
                   </CardContent>
                 </Card>
-              </framerMotion.div>
+              </motion.div>
             );
           })}
         </div>

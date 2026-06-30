@@ -37,8 +37,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", merriweather.variable)}
-      style={{ colorScheme: "dark" }}
+      suppressHydrationWarning
+      className={cn("h-full antialiased", merriweather.variable)}
     >
       <body className="min-h-full flex flex-col bg-[#030712] text-white">
         {children}

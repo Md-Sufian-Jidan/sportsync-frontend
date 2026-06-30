@@ -214,9 +214,9 @@ export function ParkingScene() {
       </div>
       
       <Canvas
-        shadows
         camera={{ position: [6, 5, 8], fov: 40 }}
         className="w-full h-full relative z-10"
+        gl={{ shadowMap: { enabled: true } } as any}
       >
         <color attach="background" args={["#030712"]} />
         <Scene />

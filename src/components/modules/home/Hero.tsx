@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { ArrowRight, Code } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -24,12 +24,12 @@ const ParkingScene = dynamic(
 );
 
 // Framer motion animation variants
-const fadeInUp = {
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
 };
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -149,7 +149,7 @@ export function Hero() {
           <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-gray-950/40 backdrop-blur-md">
             <ParkingScene />
           </div>
-          
+
           {/* Glowing float tag */}
           <div className="absolute -bottom-4 -left-4 glass py-2.5 px-4 rounded-xl shadow-lg border border-white/10 flex items-center space-x-2.5 animate-bounce" style={{ animationDuration: '4s' }}>
             <div className="h-2.5 w-2.5 rounded-full bg-accent"></div>

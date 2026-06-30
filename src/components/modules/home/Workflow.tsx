@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { LogIn, Map, Calendar, CheckCircle2, Car } from "lucide-react";
 
 export function Workflow() {
@@ -38,7 +38,7 @@ export function Workflow() {
     },
   ];
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: {},
     visible: {
       transition: {
@@ -47,7 +47,7 @@ export function Workflow() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, scale: 0.9, y: 20 },
     visible: {
       opacity: 1,
@@ -63,7 +63,7 @@ export function Workflow() {
       className="relative py-24 bg-[#030712] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-8 w-full relative z-10">
-        
+
         {/* Title */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-20">
           <motion.h4
@@ -110,7 +110,7 @@ export function Workflow() {
 
           {steps.map((step, idx) => {
             const Icon = step.icon;
-            
+
             return (
               <motion.div
                 key={idx}
