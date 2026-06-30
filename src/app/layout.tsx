@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Merriweather } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import SmoothScrollProvider from "@/components/modules/shared/SmoothScrollProvider";
 
 const merriweather = Merriweather({
   subsets: ["latin"],
@@ -41,7 +42,9 @@ export default function RootLayout({
       className={cn("h-full antialiased", merriweather.variable)}
     >
       <body className="min-h-full flex flex-col bg-[#030712] text-white">
-        {children}
+        <SmoothScrollProvider>
+          {children}
+        </SmoothScrollProvider>
       </body>
     </html>
   );
