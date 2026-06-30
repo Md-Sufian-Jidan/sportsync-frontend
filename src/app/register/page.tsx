@@ -1,196 +1,213 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { User, Mail, Lock, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
+import {
+  User,
+  Mail,
+  Lock,
+  ArrowRight,
+  ArrowLeft,
+} from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { authService } from "@/services/auth";
+import { Input } from "@/components/ui/input";
+import {
+  Field,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
+
+import AuthScene from "@/components/modules/auth/AuthScene";
+
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { register } from "@/services/authService";
+import { toast } from "sonner";
+
+const registerSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Enter a valid email"),
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters"),
+
+  role: z.enum(["driver", "admin"]),
+});
+
+type RegisterForm = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
 
-  useEffect(() => {
-    // If authenticated, send directly to dashboard
-    if (authService.isAuthenticated()) {
-      router.push("/dashboard");
-    }
-  }, [router]);
+  const form = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      role: "driver",
+    },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMsg("");
-
-    if (!name || !email || !password || !confirmPassword) {
-      setErrorMsg("Please fill in all standard inputs.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setErrorMsg("Passwords do not match.");
-      return;
-    }
-
-    setIsLoading(true);
-
+  async function onSubmit(values: RegisterForm) {
     try {
-      await authService.register(name, email, password);
-      // Registration complete, send to dashboard
-      router.push("/dashboard");
-      router.refresh();
+      await register(
+        values.name,
+        values.email,
+        values.password,
+        values.role
+      );
+
+      toast.success("Registration successful");
+
+      router.push("/login");
     } catch (err: any) {
-      setErrorMsg(err.message || "Failed to create account. Please try again.");
-    } finally {
-      setIsLoading(false);
+      toast.error(
+        err?.response?.data?.message ??
+        "Unable to register. Please try again."
+      );
     }
-  };
+  }
 
   return (
-    <div className="relative min-h-screen bg-[#030712] text-white flex flex-col items-center justify-center p-6 overflow-hidden">
-      {/* Background blobs */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[140px] pointer-events-none"></div>
-      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[140px] pointer-events-none"></div>
+    <div className="relative min-h-screen bg-background text-foreground flex items-center justify-center p-6 overflow-hidden">
+      <AuthScene />
 
-      {/* Floating Back to Home Link */}
       <Link
         href="/"
-        className="absolute top-6 left-6 inline-flex items-center space-x-2 text-xs font-body text-gray-400 hover:text-white transition-colors"
+        className="absolute top-6 left-6 inline-flex items-center space-x-2 text-xs font-body text-muted-foreground hover:text-foreground transition-colors z-10"
       >
         <ArrowLeft className="h-4 w-4" />
         <span>Back to Home</span>
       </Link>
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-md"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="w-full max-w-md z-10"
       >
-        {/* Logo */}
         <div className="text-center space-y-2 mb-8">
-          <Link href="/" className="inline-flex items-center space-x-2">
-            <span className="font-heading font-black text-3xl tracking-wider text-white">
-              SPORT<span className="text-secondary">SYNC</span>
-            </span>
-            <span className="h-2 w-2 rounded-full bg-accent animate-pulse"></span>
-          </Link>
-          <p className="font-body text-xs text-gray-400">
-            Create an account to reserve and monitor parking slots instantly
+          <h1 className="font-heading text-5xl font-black tracking-wider text-white">
+            SPORT<span className="text-secondary">SYNC</span>
+          </h1>
+
+          <p className="font-body text-xs text-white">
+            Create an account to reserve and monitor parking slots
           </p>
         </div>
 
-        {/* Form container */}
-        <div className="glass p-8 rounded-3xl border border-white/10 shadow-2xl bg-gray-950/20 backdrop-blur-md space-y-6">
-          <h2 className="font-heading text-xl font-bold text-white text-center">
-            Create Account
-          </h2>
+        <div className="rounded-3xl border border-border bg-card/80 backdrop-blur-xl p-10 space-y-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6"
+          >
+            {/* Name */}
+            <Controller
+              name="name"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Full Name</FieldLabel>
 
-          {errorMsg && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-400 font-body text-center"
-            >
-              {errorMsg}
-            </motion.div>
-          )}
+                  <div className="relative">
+                    <Input
+                      {...field}
+                      placeholder="John Doe"
+                      autoComplete="off"
+                      className="h-12 rounded-xl pl-11"
+                    />
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Full Name */}
-            <div className="space-y-1.5">
-              <label className="font-body text-xs text-gray-400 font-medium">Full Name</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Alex Morgan"
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#0b0f19]/80 border border-white/5 focus:border-secondary/50 rounded-xl outline-none font-body text-sm text-white placeholder-gray-600 transition-colors"
-                  required
-                />
-                <User className="absolute left-3.5 top-3 h-4 w-4 text-gray-600" />
-              </div>
-            </div>
+                    <User className="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground" />
+                  </div>
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
 
             {/* Email */}
-            <div className="space-y-1.5">
-              <label className="font-body text-xs text-gray-400 font-medium">Email Address</label>
-              <div className="relative">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="alex.morgan@sportsync.io"
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#0b0f19]/80 border border-white/5 focus:border-secondary/50 rounded-xl outline-none font-body text-sm text-white placeholder-gray-600 transition-colors"
-                  required
-                />
-                <Mail className="absolute left-3.5 top-3 h-4 w-4 text-gray-600" />
-              </div>
-            </div>
+            <Controller
+              name="email"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Email</FieldLabel>
+
+                  <div className="relative">
+                    <Input
+                      {...field}
+                      placeholder="Enter your email"
+                      autoComplete="off"
+                      className="h-12 rounded-xl pl-11"
+                    />
+
+                    <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground" />
+                  </div>
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
 
             {/* Password */}
-            <div className="space-y-1.5">
-              <label className="font-body text-xs text-gray-400 font-medium">Password</label>
-              <div className="relative">
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#0b0f19]/80 border border-white/5 focus:border-secondary/50 rounded-xl outline-none font-body text-sm text-white placeholder-gray-600 transition-colors"
-                  required
-                />
-                <Lock className="absolute left-3.5 top-3 h-4 w-4 text-gray-600" />
-              </div>
-            </div>
+            <Controller
+              name="password"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Password</FieldLabel>
 
-            {/* Confirm Password */}
-            <div className="space-y-1.5">
-              <label className="font-body text-xs text-gray-400 font-medium">Confirm Password</label>
-              <div className="relative">
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#0b0f19]/80 border border-white/5 focus:border-secondary/50 rounded-xl outline-none font-body text-sm text-white placeholder-gray-600 transition-colors"
-                  required
-                />
-                <Lock className="absolute left-3.5 top-3 h-4 w-4 text-gray-600" />
-              </div>
-            </div>
+                  <div className="relative">
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="••••••••"
+                      className="h-12 rounded-xl pl-11"
+                    />
 
-            {/* Register button */}
+                    <Lock className="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground" />
+                  </div>
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
             <Button
               type="submit"
-              disabled={isLoading}
-              className="w-full font-body text-sm font-semibold bg-primary hover:bg-primary/95 text-white py-3 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-primary/20"
+              disabled={form.formState.isSubmitting}
+              className="w-full h-12 rounded-xl cursor-pointer"
             >
-              {isLoading ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Registering...</span>
-                </>
+              {form.formState.isSubmitting ? (
+                "Creating Account..."
               ) : (
                 <>
-                  <span>Create Account</span>
-                  <ArrowRight className="h-4 w-4" />
+                  Create Account
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </>
               )}
             </Button>
           </form>
 
-          {/* Prompt to login */}
-          <div className="text-center pt-2 border-t border-white/5 text-xs font-body text-gray-500">
+          <div className="text-center pt-2 border-t border-border text-xs font-body text-muted-foreground">
             Already have an account?{" "}
-            <Link href="/login" className="text-secondary hover:underline font-semibold">
+            <Link
+              href="/login"
+              className="text-secondary hover:underline font-semibold"
+            >
               Sign in
             </Link>
           </div>

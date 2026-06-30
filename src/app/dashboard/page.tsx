@@ -84,7 +84,7 @@ export default function DashboardPage() {
   }, []);
 
   const totalRevenue = reservations
-    .filter(r => r.status === "completed" || r.status === "approved")
+    ?.filter(r => r.status === "completed" || r.status === "approved")
     .reduce((sum, r) => sum + r.price, 0);
 
   const activeReservations = reservations.filter(r => r.status === "approved").length;
@@ -100,7 +100,7 @@ export default function DashboardPage() {
     return (
       <div className="space-y-6 animate-pulse">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1,2,3,4].map(i => (
+          {[1, 2, 3, 4].map(i => (
             <div key={i} className="h-28 rounded-2xl bg-card/30 border border-border" />
           ))}
         </div>

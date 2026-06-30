@@ -47,14 +47,14 @@ export function ParkingZones() {
             </p>
           </div>
           <Link href="/register">
-            <Button variant="outline" className="rounded-full px-6 py-5 gap-2 border-primary/20 text-primary hover:bg-primary/5">
+            <Button variant="outline" className="rounded-full px-6 py-5 gap-2 border-primary/20 text-primary hover:bg-primary/5 cursor-pointer">
               Book a Spot <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {zones.map((zone, i) => {
+          {zones?.map((zone, i) => {
             const Icon = getZoneIcon(zone.name);
             const { iconBg, iconColor, progress } = getZoneColors(zone.name);
             const fillPercentage = ((zone.totalSpots - zone.availableSpots) / zone.totalSpots) * 100;

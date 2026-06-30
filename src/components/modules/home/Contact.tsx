@@ -35,7 +35,7 @@ export function Contact() {
           {/* Buttons List */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Link href="/register">
-              <Button className="w-full sm:w-auto font-body text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 py-6 px-8 rounded-full flex items-center gap-2">
+              <Button className="w-full sm:w-auto font-body text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 py-6 px-8 rounded-full flex items-center gap-2 cursor-pointer">
                 Get Started
                 <ArrowRight className="h-4 w-4" />
               </Button>
@@ -44,7 +44,7 @@ export function Contact() {
             <a href="#dashboard-preview">
               <Button
                 variant="outline"
-                className="w-full sm:w-auto font-body text-sm font-semibold border-border py-6 px-8 rounded-full flex items-center gap-2"
+                className="w-full sm:w-auto font-body text-sm font-semibold border-border py-6 px-8 rounded-full flex items-center gap-2 cursor-pointer"
               >
                 <Code className="h-4 w-4 text-secondary" />
                 Explore API
@@ -52,13 +52,13 @@ export function Contact() {
             </a>
 
             <a
-              href="https://github.com"
+              href="https://github.com/Md-Sufian-Jidan"
               target="_blank"
               rel="noopener noreferrer"
             >
               <Button
                 variant="outline"
-                className="w-full sm:w-auto font-body text-sm font-semibold border-border py-6 px-8 rounded-full flex items-center gap-2"
+                className="w-full sm:w-auto font-body text-sm font-semibold border-border py-6 px-8 rounded-full flex items-center gap-2 cursor-pointer"
               >
                 GitHub
               </Button>

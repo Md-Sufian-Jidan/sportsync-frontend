@@ -11,10 +11,13 @@ const merriweather = Merriweather({
 });
 
 export const metadata: Metadata = {
-  title: "SportSync - Smart Parking Management Made Simple",
+  title: {
+    template: "%s | SportSync",
+    default: "SportSync - Smart Parking Management Made Simple",
+  },
   description: "Reserve parking spots instantly, manage parking zones, and monitor reservations with a secure cloud platform.",
   openGraph: {
-    title: "SportSync - Smart Parking Management",
+    title: "SportSync - Smart Parking Management Made Simple",
     description: "Reserve parking spots instantly, manage parking zones, and monitor reservations with a secure cloud platform.",
     url: "https://sportsync.vercel.app",
     siteName: "SportSync",
@@ -22,7 +25,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SportSync - Smart Parking Management",
+    title: "SportSync - Smart Parking Management Made Simple",
     description: "Reserve parking spots instantly, manage parking zones, and monitor reservations with a secure cloud platform.",
   },
   icons: {
