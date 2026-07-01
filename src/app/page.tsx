@@ -8,8 +8,9 @@ import { TechStack } from "@/components/modules/home/TechStack";
 import { Faq } from "@/components/modules/home/Faq";
 import { Contact } from "@/components/modules/home/Contact";
 import { Footer } from "@/components/modules/shared/Footer";
+import { getCurrentUser } from "@/services/authService";
 
-export default function Home() {
+export default async function Home() {
   return (
     <div>
       <Navbar />

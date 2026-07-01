@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { LayoutDashboard, Map, CalendarRange, User, Home, LogOut, Sun, Moon, Menu, ChevronLeft, ChevronRight, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { authService, User as AuthUser } from "@/services/auth";
+import { LayoutDashboard, Map, CalendarRange, User, Home, LogOut, Menu, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { getCurrentUser, logout } from "@/services/authService";
+import { User as AuthUser } from '@/types/authTypes'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -14,35 +14,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true); // Default dark
 
-  useEffect(() => {
-    // Authenticate routing guard
-    if (!authService.isAuthenticated()) {
-      router.push("/login");
-      return;
+  const fetchCurrentUser = async () => {
+    try {
+      const user = await getCurrentUser();
+      setCurrentUser(user);
+    } catch (error) {
+      console.error("Failed to fetch current user:", error);
     }
-    setCurrentUser(authService.getCurrentUser());
-
-    // Sync theme class
-    const html = document.documentElement;
-    if (isDarkMode) {
-      html.classList.remove("light");
-      html.classList.add("dark");
-    } else {
-      html.classList.remove("dark");
-      html.classList.add("light");
-    }
-  }, [router, isDarkMode]);
-
-  const handleLogout = () => {
-    authService.logout();
-    router.push("/");
-    router.refresh();
   };
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
+  useEffect(() => {
+    fetchCurrentUser();
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    router.push("/");
+    router.refresh();
   };
 
   const navLinks = [
@@ -62,12 +51,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-background text-foreground flex transition-colors duration-300">
-      
+
       {/* 1. Desktop Sidebar */}
       <aside
-        className={`hidden md:flex flex-col border-r border-border bg-card transition-all duration-300 relative z-30 ${
-          isSidebarCollapsed ? "w-20" : "w-64"
-        }`}
+        className={`hidden md:flex flex-col border-r border-border bg-card transition-all duration-300 relative z-30 ${isSidebarCollapsed ? "w-20" : "w-64"
+          }`}
       >
         {/* Sidebar Header */}
         <div className="h-16 flex items-center justify-between px-6 border-b border-border">
@@ -85,7 +73,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Sidebar Navigation */}
         <nav className="flex-1 px-4 py-6 space-y-2">
-          {navLinks.map((link) => {
+          {navLinks?.map((link) => {
             const Icon = link.icon;
             const isActive = pathname === link.href;
 
@@ -93,11 +81,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 key={link.name}
                 href={link.href}
-                className={`flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-body transition-colors ${
-                  isActive
-                    ? "bg-primary text-primary-foreground font-semibold"
-                    : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
-                }`}
+                className={`flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-body transition-colors ${isActive
+                  ? "bg-primary text-primary-foreground font-semibold"
+                  : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
+                  }`}
               >
                 <Icon className="h-5 w-5 flex-shrink-0" />
                 {!isSidebarCollapsed && <span>{link.name}</span>}
@@ -161,11 +148,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     key={link.name}
                     href={link.href}
                     onClick={() => setIsMobileSidebarOpen(false)}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-body transition-colors ${
-                      isActive
-                        ? "bg-primary text-primary-foreground font-semibold"
-                        : "text-muted-foreground hover:bg-sidebar-accent"
-                    }`}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-body transition-colors ${isActive
+                      ? "bg-primary text-primary-foreground font-semibold"
+                      : "text-muted-foreground hover:bg-sidebar-accent"
+                      }`}
                   >
                     <Icon className="h-5 w-5 flex-shrink-0" />
                     <span>{link.name}</span>
@@ -212,13 +198,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
 
           <div className="flex items-center space-x-4">
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors cursor-pointer"
-            >
-              {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </button>
 
             {/* Profile Menu Trigger */}
             <div className="relative">
@@ -226,17 +205,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="flex items-center space-x-2.5 focus:outline-none cursor-pointer group"
               >
-                {currentUser?.avatar ? (
-                  <img
-                    src={currentUser.avatar}
-                    alt={currentUser.name}
-                    className="h-8 w-8 rounded-full border border-border group-hover:border-secondary transition-colors"
-                  />
-                ) : (
-                  <div className="h-8 w-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary">
-                    <User className="h-4 w-4" />
-                  </div>
-                )}
+                <div className="h-8 w-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary">
+                  <User className="h-4 w-4" />
+                </div>
                 <div className="hidden sm:block text-left">
                   <p className="font-body text-xs font-semibold text-foreground leading-tight">
                     {currentUser?.name || "Alex Morgan"}

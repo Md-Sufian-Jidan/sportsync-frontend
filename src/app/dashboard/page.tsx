@@ -9,64 +9,8 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { zonesService, ParkingZone } from "@/services/zones";
 import { reservationsService, Reservation } from "@/services/reservations";
-
-// Animated counter hook
-function useAnimatedCounter(target: number, isInView: boolean) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (!isInView) return;
-    let start = 0;
-    const increment = target > 100 ? Math.ceil(target / 60) : 1;
-    const interval = setInterval(() => {
-      start += increment;
-      if (start >= target) { setCount(target); clearInterval(interval); }
-      else setCount(start);
-    }, Math.abs(Math.floor(1500 / (target / increment))));
-    return () => clearInterval(interval);
-  }, [target, isInView]);
-  return count;
-}
-
-function StatCard({ label, value, prefix = "", suffix = "", icon: Icon, trend, color }: {
-  label: string; value: number; prefix?: string; suffix?: string;
-  icon: React.ComponentType<any>; trend: string; color: string;
-}) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-  const count = useAnimatedCounter(value, isInView);
-  return (
-    <div ref={ref} className="p-5 rounded-2xl border border-border bg-card/50 space-y-4">
-      <div className="flex items-center justify-between">
-        <span className="font-body text-xs text-muted-foreground">{label}</span>
-        <div className={`p-2 rounded-lg bg-opacity-10 ${color}`}>
-          <Icon className={`h-4 w-4`} />
-        </div>
-      </div>
-      <div>
-        <p className="font-heading text-2xl font-black text-foreground">
-          {prefix}{count.toLocaleString()}{suffix}
-        </p>
-        <p className="font-body text-[11px] text-muted-foreground mt-1">{trend}</p>
-      </div>
-    </div>
-  );
-}
-
-function StatusBadge({ status }: { status: Reservation["status"] }) {
-  const config = {
-    approved: { label: "Approved", icon: CheckCircle2, cls: "bg-accent/10 text-accent border-accent/20" },
-    pending: { label: "Pending", icon: AlertCircle, cls: "bg-secondary/10 text-secondary border-secondary/20" },
-    completed: { label: "Completed", icon: CheckCircle2, cls: "bg-gray-500/10 text-gray-400 border-gray-500/20" },
-    cancelled: { label: "Cancelled", icon: XCircle, cls: "bg-red-500/10 text-red-400 border-red-500/20" },
-  };
-  const { label, icon: Icon, cls } = config[status];
-  return (
-    <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-body font-bold border ${cls}`}>
-      <Icon className="h-2.5 w-2.5" />
-      {label}
-    </span>
-  );
-}
+import { StatusBadge } from "@/components/modules/dashboard/StatusBadge";
+import { StatCard } from "@/components/modules/dashboard/StatCard";
 
 export default function DashboardPage() {
   const [zones, setZones] = useState<ParkingZone[]>([]);

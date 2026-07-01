@@ -1,5 +1,8 @@
+"use server";
+
 import { api } from "@/lib/axios";
 import { LoginResponse, RegisterResponse, User } from "@/types/authTypes";
+import { cookies } from "next/headers";
 
 export async function login(email: string, password: string) {
     try {
@@ -8,8 +11,9 @@ export async function login(email: string, password: string) {
             password,
         });
 
-        if (typeof window !== "undefined") {
-            localStorage.setItem("sportsync_token", data.data.token);
+        const cookieStore = await cookies();
+        if (data.success) {
+            cookieStore.set("sportsync_token", data.data.token);
         }
 
         return data;
@@ -35,25 +39,31 @@ export async function register(name: string, email: string, password: string, ro
 };
 
 export async function logout(): Promise<void> {
-    if (typeof window !== "undefined") {
-        localStorage.removeItem("sportsync_token");
-        localStorage.removeItem("sportsync_user");
-    }
+    const cookieStore = await cookies();
+    cookieStore.set("sportsync_token", "");
 };
 
 export async function getCurrentUser(): Promise<User | null> {
-    if (typeof window !== "undefined") {
-        const userJson = localStorage.getItem("sportsync_user");
-        if (userJson) {
-            try {
-                return JSON.parse(userJson) as User;
-            } catch {
-                return null;
-            }
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get("sportsync_token")?.value;
+        if (!token) {
+            console.log("No token found");
+            return null;
         }
+        const { data } = await api.get<RegisterResponse>("/auth/me", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        console.log(data);
+        console.log(token);
+        return data?.data;
+    } catch (error) {
+        console.error("Failed to fetch current user:", error);
+        return null;
     }
-    return null;
-};
+}
 
 export async function updateProfile(name: string, role: string) {
     try {

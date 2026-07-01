@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { Menu, X, ArrowRight, User, LayoutDashboard } from "lucide-react";
+import { Menu, X, ArrowRight, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { authService, User as AuthUser } from "@/services/auth";
-
+import { User as AuthUser } from '@/types/authTypes'
+import { getCurrentUser } from "@/services/authService";
 export function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
@@ -14,8 +14,17 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
 
+  const fetchCurrentUser = async () => {
+    try {
+      const user = await getCurrentUser();
+      setCurrentUser(user);
+    } catch (error) {
+      console.error("Failed to fetch current user:", error);
+    }
+  };
+
   useEffect(() => {
-    setCurrentUser(authService.getCurrentUser());
+    fetchCurrentUser();
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
